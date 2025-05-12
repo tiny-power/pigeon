@@ -72,8 +72,9 @@
                     >
                         <el-option label="MinIO" value="minio"></el-option>
                         <el-option label="Amazon S3" value="aws"></el-option>
+                        <el-option label="Backblaze B2" value="b2"></el-option>
                         <el-option label="CloudFlare R2" value="r2"></el-option>
-                        <el-option label="Aliyun OSS" value="oss"></el-option>
+                        <el-option label="Alibaba Cloud OSS" value="oss"></el-option>
                         <el-option label="Tencent COS" value="cos"></el-option>
                         <el-option label="Other" value="other"></el-option>
                     </el-select>
@@ -85,6 +86,7 @@
                         profileForm.type === 'minio' ||
                         profileForm.type === 'oss' ||
                         profileForm.type === 'cos' ||
+                        profileForm.type === 'b2' ||
                         profileForm.type === 'r2' ||
                         profileForm.type === 'other'
                     "
@@ -464,8 +466,9 @@ export default {
             accountType: {
                 minio: 'MinIO',
                 aws: 'Amazon S3',
+                b2: 'Backblaze B2',
                 r2: 'CloudFlare R2',
-                oss: 'Aliyun OSS',
+                oss: 'Alibaba Cloud OSS',
                 cos: 'Tencent COS',
                 azure: 'Azure Blob',
                 google: 'Google Cloud Storage',
@@ -1053,6 +1056,30 @@ export default {
                     this.client = null
                     this.$message.error(err.message)
                 }
+            } else if (this.profileForm.type === 'b2') {
+                try {
+                    this.client = new Minio.Client({
+                        endPoint: this.profileForm.endPoint,
+                        useSSL: true,
+                        accessKey: this.profileForm.accessKey,
+                        secretKey: this.profileForm.secretKey
+                    })
+                    const buckets = await this.client.listBuckets()
+                    this.tableData = buckets
+                    this.profileVisible = false
+                    if (this.currentIndex === -1) {
+                        this.profiles.push(JSON.parse(JSON.stringify(this.profileForm)))
+                    } else {
+                        this.$set(this.profiles, this.currentIndex, JSON.parse(JSON.stringify(this.profileForm)))
+                    }
+                    this.currentRow = JSON.parse(JSON.stringify(this.profileForm))
+                    localStorage.setItem('profiles', JSON.stringify(this.profiles))
+                    this.setCurrentRowHighlight(this.profiles.length - 1)
+                    this.currentIndex = this.profiles.length - 1
+                } catch (err) {
+                    this.client = null
+                    this.$message.error(err.message)
+                }
             } else if (this.profileForm.type === 'r2') {
                 try {
                     this.client = new Minio.Client({
@@ -1181,6 +1208,24 @@ export default {
                         accessKey: profile.accessKey,
                         secretKey: profile.secretKey,
                         pathStyle: false
+                    })
+                    const buckets = await this.client.listBuckets()
+                    this.currentIndex = index
+                    this.tableData = buckets
+                    this.setCurrentRowHighlight(index)
+                } catch (err) {
+                    this.client = null
+                    this.currentIndex = -1
+                    this.tableData = []
+                    this.$message.error(err.message)
+                }
+            } else if (profile.type === 'b2') {
+                try {
+                    this.client = new Minio.Client({
+                        endPoint: profile.endPoint,
+                        useSSL: true,
+                        accessKey: profile.accessKey,
+                        secretKey: profile.secretKey
                     })
                     const buckets = await this.client.listBuckets()
                     this.currentIndex = index
