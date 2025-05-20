@@ -48,16 +48,16 @@ async function createMainWindow() {
     })
 
     ipcMain.handle('dialog:openFile', async () => {
-        if (process.platform == 'win32') {
+        if (process.platform == 'darwin') {
             const { canceled, filePaths } = await dialog.showOpenDialog({
-                properties: ['openFile', 'multiSelections']
+                properties: ['openDirectory', 'openFile', 'multiSelections']
             })
             if (!canceled) {
                 return filePaths
             }
         } else {
             const { canceled, filePaths } = await dialog.showOpenDialog({
-                properties: ['openDirectory', 'openFile', 'multiSelections']
+                properties: ['openFile', 'multiSelections']
             })
             if (!canceled) {
                 return filePaths
