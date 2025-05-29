@@ -132,7 +132,7 @@
         <div style="flex: 1; display: flex; justify-content: center; align-items: center; flex-direction: column">
             <div class="profile" v-if="!client">
                 <div>
-                    <i class="el-icon-cloudy" style="font-size: 48px"></i>
+                    <img src="logo.webp" style="width: 48px; height: 48px" />
                 </div>
                 <div style="font-size: 18px; color: #272727; margin: 15px 0px 5px 0px; font-weight: bold">
                     {{ $t('title') }}
