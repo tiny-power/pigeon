@@ -1,6 +1,6 @@
 {
     "name": "pigeon",
-    "version": "1.0.2",
+    "version": "1.0.0",
     "private": true,
     "description": "A Modern GUI For S3",
     "author": {
@@ -32,6 +32,7 @@
         "vue-router": "^3.2.0"
     },
     "devDependencies": {
+        "@electron/notarize": "^2.5.0",
         "@vue/cli-plugin-babel": "^4.3.0",
         "@vue/cli-plugin-router": "^4.3.0",
         "@vue/cli-service": "^4.3.0",
